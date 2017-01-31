@@ -18,5 +18,8 @@
   "homepage": "https://github.com/Hornblowers/hornblowers#readme",
   "dependencies": {
     "express": "^4.14.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
