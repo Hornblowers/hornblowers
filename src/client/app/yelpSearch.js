@@ -6,6 +6,8 @@ exports.yelpSearch = function(cb, term, location) {
 
   var clientSecret = 'uvzcOWS4Tff1GAoYFlngV7WbmQUxlJryi5LU5Kcy5X58MoBYHeXSVUcpRRHesFGS';
 
+  var numResults = numResults || 10;
+
   const searchRequest = {
     term: term || "falafel",
     location: location || '944 Market St, san francisco, ca'
@@ -16,9 +18,10 @@ exports.yelpSearch = function(cb, term, location) {
 
     client.search(searchRequest).then(response => {
       const firstResult = response.jsonBody.businesses[0];
+      const results = response.jsonBody.businesses;
       const prettyJson = JSON.stringify(firstResult, null, 4);
       console.log(prettyJson);
-      cb(firstResult);
+      cb(results);
     });
   }).catch(e => {
     console.log(e);
