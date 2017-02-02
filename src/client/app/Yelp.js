@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import yelpSearch from './yelpSearch';
+import { yelpSearch } from './yelpSearch';
 import YelpResult from './YelpResult';
 
 import axios from 'axios';
@@ -53,15 +53,21 @@ class Yelp extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      term: '',
-      location: '',
+      term: 'falafel',
+      location: '944 Market St, San Francisco, CA',
+      numResults: 10,
       result: this.props.result
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleNumResultsChange = this.handleNumResultsChange.bind(this)
     this.handleTermChange = this.handleTermChange.bind(this)
     this.handleLocationChange = this.handleLocationChange.bind(this)
     this.getResult = this.getResult.bind(this);
+  }
+
+  handleNumResultsChange(event) {
+    console.log('handleNumResultsChange');
+    this.setState({numResults: event.target.value});
   }
 
   handleTermChange(event) {
@@ -74,54 +80,60 @@ class Yelp extends React.Component {
     this.setState({location: event.target.value});
   }
 
-  handleSubmit(e) {
-    console.log('handleClick');
-    // e.preventDefault()
-    yelpSearch(function(result) {
-      console.log(result) 
-    });;
-  }
-
   getResult() {
     var context = this;
     var term = this.state.term;
     var location = this.state.location;
+    var numResults = this.state.numResults;
     axios
       .get('/api/' + term + '@' + location)
       .then(function(response) {
         context.setState({
-          result: response.data
+          result: response.data.slice(0, numResults)
         });
-        console.log(response.data);
       });
   }
 
   render() {
     return (
       <div>
-        <button onClick={this.getResult} >Find First Result</button>
-        <form onSubmit={this.handleSubmit}>
+        <div className='yelpMenu'>
+          <label>
+            Number of Results:
+            <br />
+            <input type="text"
+                   value={this.state.numResults}
+                   onChange={this.handleNumResultsChange}
+                   className="prefilled"
+            />
+          </label>
+          <br /><br />
           <label>
             Enter term string:
-            <br/>
+            <br />
             <input type="text"
                    value={this.state.term}
                    onChange={this.handleTermChange}
+                   className="prefilled"
             />
           </label>
-          <br/>
+          <br /><br />
           <label>
             Enter location string:
-            <br/>
+            <br />
             <input type="text"
                    value={this.state.location}
                    onChange={this.handleLocationChange}
+                   className="prefilled"
             />
           </label>
-          <br/>
-        </form>
+          <br /><br />
+          <button onClick={this.getResult} >Find Results</button>
+        </div>
         {this.state.result ?
-          <YelpResult firstResult={this.state.result}/>
+          this.state.result.map(item =>
+            <YelpResult result={item} />
+          )
           : null }
       </div>
     )
@@ -129,5 +141,4 @@ class Yelp extends React.Component {
 }
 
 export default Yelp;
-
 
