@@ -100,7 +100,6 @@ class Yelp extends React.Component {
     }
     return (
       <div>
-        <button onClick={this.toggleSearch}>Toggle Manual Search</button>
         <div className='yelpMenu' style={menuVis}>
           <label> 
             Number of Results:<br />
@@ -122,6 +121,7 @@ class Yelp extends React.Component {
         </div>
         <div className="bordered" style={borderVis}>
           <div className="pre-scrollable">
+          <button onClick={this.toggleSearch}>Toggle Manual Search</button>
           {this.state.result ?
             this.state.result.map(item =>
               <YelpResult result={item} voteFunc={this.toggleVote} />
